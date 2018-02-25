@@ -1,16 +1,19 @@
 package fi.ollipuljula.rest;
 
+import fi.ollipuljula.EntiteettiRepository;
 import fi.ollipuljula.bean.Kenttäsäännöt;
 import fi.ollipuljula.bean.LasketutArvot;
-import fi.ollipuljula.model.Dokumenttikenttä;
-import fi.ollipuljula.model.Dokumenttiosio;
+import fi.ollipuljula.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @RestController
 @RequestMapping("/ui")
+@CrossOrigin(origins = "http://localhost:3000")
 public class UiComponentController {
 
     @Autowired
@@ -60,4 +63,42 @@ public class UiComponentController {
         return this.lasketutArvot.laske(mihinHalutaan, mistäHalutaan, arvo);
     }
 
+    @Autowired
+    private EntiteettiRepository entiteettiRepository;
+
+    @RequestMapping("/document/{id}")
+    public Document getDocument(@PathVariable long id) {
+        Entiteetti one = entiteettiRepository.findOne(id);
+        if (one == null) {
+            throw new RuntimeException("id'llä ei löydy");
+        }
+        return DocumentFactory.create(one);
+    }
+
+    @RequestMapping("/document/new")
+    public Document createNewDocument() {
+        return DocumentFactory.create(new Entiteetti());
+    }
+
+    @RequestMapping("/document/search")
+    public List<Entiteetti> searchDocuments() {
+        Iterable<Entiteetti> all = entiteettiRepository.findAll();
+        ArrayList<Entiteetti> documents = new ArrayList<>();
+        all.forEach(documents::add);
+        return documents;
+    }
+
+    @RequestMapping(path = "/document/validate", method = RequestMethod.POST)
+    public Document validateDocument(@RequestBody Entiteetti entiteetti) {
+        System.out.println(entiteetti);
+        return DocumentFactory.create(entiteetti);
+    }
+
+    @RequestMapping(path = "/document/save", method = RequestMethod.POST)
+    public Document saveDocument(@RequestBody Entiteetti entiteetti) {
+        System.out.println("before: " +entiteetti);
+        Entiteetti save = entiteettiRepository.save(entiteetti);
+        System.out.println("after: " +entiteetti);
+        return DocumentFactory.create(save);
+    }
 }

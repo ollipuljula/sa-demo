@@ -5,13 +5,13 @@ import lombok.Getter;
 
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum Dokumenttikenttä {
-    ETUNIMI(Kenttätyyppi.TEKSTI),
-    SUKUNIMI(Kenttätyyppi.TEKSTI),
+    ETUNIMI(Kenttätyyppi.TEXTFIELD),
+    SUKUNIMI(Kenttätyyppi.TEXTFIELD),
     // voi käyttää annotaatioitakin tyyliin @Kokonaisluku, @MinValue(18), @MaxValue(65)
     // ja ottaa ne huomioon säännöissä
-    IKA(Kenttätyyppi.KOKONAISLUKU),
-    PUHELINNUMERO(Kenttätyyppi.PUHELINNUMERO),
-    KATUOSOITE(Kenttätyyppi.TEKSTI);
+    IKA(Kenttätyyppi.NUMBER),
+    PUHELINNUMERO(Kenttätyyppi.PHONENUMBER),
+    KATUOSOITE(Kenttätyyppi.TEXTFIELD);
 
     @Getter
     private Kenttätyyppi tyyppi;
