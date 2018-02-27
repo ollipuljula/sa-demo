@@ -1,10 +1,13 @@
 package fi.ollipuljula;
 
-import fi.ollipuljula.bean.Kenttäsäännöt;
-import fi.ollipuljula.bean.LasketutArvot;
+import fi.ollipuljula.data.jpa.UserEntity;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
+
+import javax.annotation.PostConstruct;
+import java.util.Arrays;
+import java.util.List;
 
 @SpringBootApplication
 public class Application {
@@ -12,13 +15,15 @@ public class Application {
         SpringApplication.run(Application.class, args);
     }
 
-    @Bean
-    public Kenttäsäännöt kenttäsäännöt() {
-        return new Kenttäsäännöt();
-    }
+    @Autowired
+    private UserEntityRepository userEntityRepository;
 
-    @Bean
-    public LasketutArvot lasketutArvot() {
-        return new LasketutArvot();
+    @PostConstruct
+    public void seedTestData() {
+        List<UserEntity> userEntities = Arrays.asList(
+                new UserEntity(1L, "Olli", "Puljula", "olli.puljula@gmail.com", "12345"),
+                new UserEntity(2L, "Foo", "Bar", "olli.puljula@gmail.com", "12345")
+        );
+        userEntityRepository.save(userEntities);
     }
 }

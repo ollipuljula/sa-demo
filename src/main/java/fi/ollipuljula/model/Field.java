@@ -2,15 +2,14 @@ package fi.ollipuljula.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonRootName;
 import lombok.AccessLevel;
 import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by olli on 11/05/2017.
- */
+@JsonRootName("field")
 public abstract class Field<T, U> {
     @JsonIgnore
     @Getter(AccessLevel.PROTECTED)
@@ -21,26 +20,33 @@ public abstract class Field<T, U> {
     }
 
     @JsonProperty("disabled")
-    boolean isDisabled() {
+    public boolean isDisabled() {
         return false;
     };
 
     @JsonProperty("visible")
-    boolean isVisible() {
+    public boolean isVisible() {
         return true;
     };
 
     @JsonProperty("validationErrors")
-    List<ValidationError> validate() {
-        return new ArrayList<ValidationError>();
+    public List<ValidationError> validate() {
+        return new ArrayList<>();
     };
 
-    @JsonProperty("type")
-    abstract Kenttätyyppi getKenttätyyppi();
+    @JsonProperty("fieldType")
+    public FieldType getFieldType() {
+        return getType().getFieldType();
+    }
 
     @JsonProperty("value")
-    abstract U value();
+    public abstract U getValue();
 
     @JsonProperty("name")
-    abstract String getName();
+    public String getName() {
+        return getType().getName();
+    }
+
+    @JsonProperty("type")
+    public abstract Type getType();
 }

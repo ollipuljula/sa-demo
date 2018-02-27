@@ -1,14 +1,16 @@
 package fi.ollipuljula.rest;
 
-import fi.ollipuljula.EntiteettiRepository;
-import fi.ollipuljula.bean.Kenttäsäännöt;
-import fi.ollipuljula.bean.LasketutArvot;
+import fi.ollipuljula.UserEntityRepository;
+import fi.ollipuljula.bean.CalculatedValues;
+import fi.ollipuljula.data.DocumentFactory;
+import fi.ollipuljula.data.DocumentField;
+import fi.ollipuljula.data.DocumentSection;
+import fi.ollipuljula.data.jpa.UserEntity;
 import fi.ollipuljula.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -17,10 +19,10 @@ import java.util.List;
 public class UiComponentController {
 
     @Autowired
-    private Kenttäsäännöt kenttäsäännöt;
+    private DocumentFactory documentFactory;
 
     @Autowired
-    private LasketutArvot lasketutArvot;
+    private CalculatedValues calculatedValues;
 
     @RequestMapping("HaeDokumenttiosiot")
     public DokumenttiosiotResponse dokumenttiosiot() {
@@ -28,24 +30,25 @@ public class UiComponentController {
     }
 
     /**
-     *  @param dokumenttiosio Dokumenttiosio enumin nimi
+     *  @param dokumenttiosio DocumentSection enumin nimi
       */
     @RequestMapping("HaeDokumenttiosionKentat")
     public DokumenttiosioResponse dokumenttiosio(@RequestParam("avain") String dokumenttiosio) {
-        return new DokumenttiosioResponse(Dokumenttiosio.valueOf(dokumenttiosio).getKentät());
+        return new DokumenttiosioResponse(DocumentSection.valueOf(dokumenttiosio).getFields());
     }
 
     // todo validointiin voi vaikuttaa muidenkin kenttien arvot
     /**
      *
-     * @param dokumenttikenttä Dokumenttikenttä enumin nimi
+     * @param dokumenttikenttä DocumentField enumin nimi
      * @param arvo Em. kentän arvo
      * @return
      */
     @RequestMapping("/ValidoiKentta")
     public boolean validoiDokumenttikenttä(@RequestParam("avain") String dokumenttikenttä, @RequestParam("arvo") String arvo) {
-        Dokumenttikenttä kenttä = Dokumenttikenttä.valueOf(dokumenttikenttä);
-        return kenttäsäännöt.validoi(kenttä, arvo);
+        DocumentField kenttä = DocumentField.valueOf(dokumenttikenttä);
+        //return kenttäsäännöt.validoi(kenttä, arvo);
+        return false;
     }
 
     // todo arvoon voi vaikuttaa useamman kentän arvo
@@ -57,48 +60,49 @@ public class UiComponentController {
      * @return
      */
     @RequestMapping("/HaeKentänLaskettuArvo")
-    public String laskeArvo(@RequestParam("mihin") Dokumenttikenttä mihinHalutaan,
-                               @RequestParam("mista") Dokumenttikenttä mistäHalutaan,
+    public String laskeArvo(@RequestParam("mihin") DocumentField mihinHalutaan,
+                               @RequestParam("mista") DocumentField mistäHalutaan,
                                @RequestParam("arvo") String arvo) {
-        return this.lasketutArvot.laske(mihinHalutaan, mistäHalutaan, arvo);
+        //return this.calculatedValues.laske(mihinHalutaan, mistäHalutaan, arvo);
+        return null;
     }
 
     @Autowired
-    private EntiteettiRepository entiteettiRepository;
+    private UserEntityRepository userEntityRepository;
 
     @RequestMapping("/document/{id}")
     public Document getDocument(@PathVariable long id) {
-        Entiteetti one = entiteettiRepository.findOne(id);
+        UserEntity one = userEntityRepository.findOne(id);
         if (one == null) {
             throw new RuntimeException("id'llä ei löydy");
         }
-        return DocumentFactory.create(one);
+        return documentFactory.create(one);
     }
 
     @RequestMapping("/document/new")
     public Document createNewDocument() {
-        return DocumentFactory.create(new Entiteetti());
+        return documentFactory.create(new UserEntity());
     }
 
     @RequestMapping("/document/search")
-    public List<Entiteetti> searchDocuments() {
-        Iterable<Entiteetti> all = entiteettiRepository.findAll();
-        ArrayList<Entiteetti> documents = new ArrayList<>();
+    public List<UserEntity> searchDocuments() {
+        Iterable<UserEntity> all = userEntityRepository.findAll();
+        ArrayList<UserEntity> documents = new ArrayList<>();
         all.forEach(documents::add);
         return documents;
     }
 
     @RequestMapping(path = "/document/validate", method = RequestMethod.POST)
-    public Document validateDocument(@RequestBody Entiteetti entiteetti) {
-        System.out.println(entiteetti);
-        return DocumentFactory.create(entiteetti);
+    public Document validateDocument(@RequestBody UserEntity userEntity) {
+        System.out.println(userEntity);
+        return documentFactory.create(userEntity);
     }
 
     @RequestMapping(path = "/document/save", method = RequestMethod.POST)
-    public Document saveDocument(@RequestBody Entiteetti entiteetti) {
-        System.out.println("before: " +entiteetti);
-        Entiteetti save = entiteettiRepository.save(entiteetti);
-        System.out.println("after: " +entiteetti);
-        return DocumentFactory.create(save);
+    public Document saveDocument(@RequestBody UserEntity userEntity) {
+        System.out.println("before: " + userEntity);
+        UserEntity save = userEntityRepository.save(userEntity);
+        System.out.println("after: " + userEntity);
+        return documentFactory.create(save);
     }
 }

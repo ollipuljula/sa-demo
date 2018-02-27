@@ -1,4 +1,4 @@
-package fi.ollipuljula.model;
+package fi.ollipuljula.data.jpa;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -9,14 +9,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import java.util.Date;
 
-/**
- * Created by olli on 12/05/2017.
- */
 @Getter
 @Setter
 @Entity
-public class Entiteetti {
-    public Entiteetti(long id, String firstName, String lastName, String email, String phoneNumber) {
+public class UserEntity {
+    public UserEntity(long id, String firstName, String lastName, String email, String phoneNumber) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -24,7 +21,7 @@ public class Entiteetti {
         this.phoneNumber = phoneNumber;
     }
 
-    public Entiteetti() {
+    public UserEntity() {
     }
 
     @Id
@@ -44,7 +41,7 @@ public class Entiteetti {
 
     @Override
     public String toString() {
-        return "Entiteetti{" +
+        return "UserEntity{" +
                 "id=" + id +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +

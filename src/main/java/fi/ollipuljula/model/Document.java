@@ -1,14 +1,18 @@
 package fi.ollipuljula.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonRootName;
 
 import java.util.List;
 
-/**
- * Created by olli on 12/05/2017.
- */
 @JsonRootName("document")
 public interface Document {
+    @JsonProperty("id")
     Long getId();
-    List<Part> getParts();
+
+    @JsonProperty("name")
+    String getName();
+
+    @JsonProperty("sections")
+    List<Section> getSections();
 }

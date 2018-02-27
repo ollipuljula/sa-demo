@@ -1,6 +1,6 @@
 package fi.ollipuljula.model;
 
-public enum Kenttätyyppi {
+public enum FieldType {
     TEXTFIELD,
     TEXTAREA,
     NUMBER,

@@ -1,16 +1,19 @@
 package fi.ollipuljula.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonRootName;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
-/**
- * Created by olli on 11/05/2017.
- */
 @AllArgsConstructor
 @Getter
 @Setter
+@JsonRootName("validationError")
 public class ValidationError {
+    @JsonProperty("key")
     private String key;
-    private String description;
+
+    @JsonProperty("message")
+    private String message;
 }
