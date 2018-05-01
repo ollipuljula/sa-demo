@@ -16,8 +16,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/ui")
-@CrossOrigin(origins = "http://localhost:3000")
+@RequestMapping("/api")
+@CrossOrigin(origins = {
+        "http://localhost:3000",
+        "http://localhost:4200"
+})
 public class UiComponentController {
 
     @Autowired
